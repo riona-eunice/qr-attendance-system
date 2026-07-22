@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Faculty{% endblock %}
+{% block content %}
+<h1>🧑‍🏫 Register Faculty</h1>
+<div class="card">
+    <form method="POST">
+        <label>Full Name</label>
+        <input type="text" name="name" placeholder="e.g. Dr. A. Kumar" required>
+
+        <label>Designation</label>
+        <input type="text" name="designation" placeholder="e.g. Assistant Professor" required>
+
+        <label>Email</label>
+        <input type="email" name="email" required>
+
+        <label style="display:flex; align-items:center; gap:8px; font-weight:normal;">
+            <input type="checkbox" name="is_hod" style="width:auto; margin:0;">
+            This person is the Head of Department (HOD)
+        </label>
+
+        <button type="submit">Register Faculty</button>
+    </form>
+</div>
+
+<h2>All Faculty</h2>
+{% if faculty_list %}
+    {% for f in faculty_list %}
+    <div class="card">
+        <strong>{{ f.name }}</strong>
+        {% if f.is_hod %}<span class="pill hod">HOD</span>{% endif %}
+        <br>
+        <span class="muted">{{ f.designation }} &nbsp;|&nbsp; {{ f.email }}</span>
+    </div>
+    {% endfor %}
+{% else %}
+    <p>No faculty registered yet.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}{{ course.name }}{% endblock %}
+{% block content %}
+<span class="pill">{{ course.code }}</span>
+<h1>{{ course.name }}</h1>
+<p class="muted">Faculty In-Charge: {{ course.faculty_name }}</p>
+
+<div class="card">
+    <form method="POST" action="{{ url_for('start_session', course_id=course.id) }}">
+        <label>Faculty conducting today's session</label>
+        <select name="conducted_by_id">
+            {% for f in faculty_list %}
+                <option value="{{ f.id }}" {% if f.id == course.faculty_id %}selected{% endif %}>
+                    {{ f.name }} ({{ f.designation }})
+                </option>
+            {% endfor %}
+        </select>
+        <button type="submit">▶ Start Today's Session (Live Scan)</button>
+    </form>
+</div>
+
+<a href="{{ url_for('report', course_id=course.id) }}">📊 View full attendance report &rarr;</a>
+
+<h2>Past Sessions</h2>
+{% if sessions %}
+    {% for s in sessions %}
+    <div class="card">
+        <strong>{{ s.session_date }}</strong>
+        <span class="muted">— conducted by {{ s.conducted_by_name }}</span><br>
+        <a href="{{ url_for('scan', session_id=s.id) }}">Resume Scanning</a> &nbsp;|&nbsp;
+        <a href="{{ url_for('dashboard', session_id=s.id) }}">View Dashboard</a>
+    </div>
+    {% endfor %}
+{% else %}
+    <p>No sessions yet. Click "Start Today's Session" above.</p>
+{% endif %}
+
+<br><a href="{{ url_for('home') }}">&larr; Back to courses</a>
+{% endblock %}

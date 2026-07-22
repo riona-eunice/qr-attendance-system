@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}OD Management{% endblock %}
+{% block content %}
+<h1>📝 On-Duty (OD) Management</h1>
+<p class="muted">
+    Only a faculty member can grant an OD. This is the sole legitimate way a student can be marked
+    present without a live camera scan — protecting the system from proxy attendance.
+</p>
+
+<div class="card">
+    {% if not students or not faculty_list %}
+        <p>You need at least one registered student and one registered faculty member before granting an OD.</p>
+    {% else %}
+    <form method="POST">
+        <label>Student</label>
+        <select name="student_id" required>
+            <option value="" disabled selected>Select student...</option>
+            {% for s in students %}
+                <option value="{{ s.id }}">{{ s.name }} ({{ s.roll_no }})</option>
+            {% endfor %}
+        </select>
+
+        <label>Date</label>
+        <input type="date" name="od_date" required>
+
+        <label>Reason</label>
+        <input type="text" name="reason" placeholder="e.g. College symposium, sports meet" required>
+
+        <label>Approved By (Faculty)</label>
+        <select name="approved_by_id" required>
+            <option value="" disabled selected>Select faculty...</option>
+            {% for f in faculty_list %}
+                <option value="{{ f.id }}">{{ f.name }} ({{ f.designation }})</option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">Grant OD</button>
+    </form>
+    {% endif %}
+</div>
+
+<h2>OD Records</h2>
+{% if od_list %}
+<div class="card">
+    <table>
+        <tr><th>Date</th><th>Student</th><th>Reason</th><th>Approved By</th></tr>
+        {% for o in od_list %}
+        <tr>
+            <td>{{ o.od_date }}</td>
+            <td>{{ o.student_name }} ({{ o.roll_no }})</td>
+            <td>{{ o.reason }}</td>
+            <td>{{ o.approved_by_name }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% else %}
+    <p>No OD records yet.</p>
+{% endif %}
+
+<a href="{{ url_for('home') }}">&larr; Back to home</a>
+{% endblock %}

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Attendance System{% endblock %}</title>
+    <style>
+        body {
+            font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 0 20px 40px 20px;
+            background: #f4f6fb;
+            color: #1c1e26;
+        }
+        .header-banner {
+            background: linear-gradient(135deg, #1d2b64, #2a4d8f);
+            color: white;
+            margin: 0 -20px;
+            padding: 20px 20px 16px 20px;
+            border-radius: 0 0 16px 16px;
+        }
+        .header-banner h1 {
+            margin: 0;
+            font-size: 20px;
+            color: white;
+        }
+        .header-banner .dept {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-top: 2px;
+        }
+        .header-banner .hod {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: 6px;
+        }
+        nav {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            padding: 14px 0;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #dde1ee;
+        }
+        nav a { font-weight: 600; color: #1d2b64; font-size: 14px; }
+        nav a:hover { color: #2a4d8f; }
+        h1, h2 { color: #1c1e26; }
+        a { color: #2a4d8f; text-decoration: none; }
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+            margin-bottom: 16px;
+        }
+        input[type=text], input[type=email], input[type=date], select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 6px 0 16px 0;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 15px;
+            font-family: inherit;
+        }
+        label { font-size: 13px; font-weight: 600; color: #555; }
+        button, .btn {
+            background: #2a4d8f;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            display: inline-block;
+        }
+        button:hover, .btn:hover { background: #1d2b64; }
+        .flash {
+            background: #fff3cd;
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+        table { width: 100%; border-collapse: collapse; }
+        td, th { padding: 8px; border-bottom: 1px solid #eee; text-align: left; font-size: 14px; }
+        .pill {
+            display: inline-block;
+            background: #eef0ff;
+            color: #2a4d8f;
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .pill.hod { background: #fde9d9; color: #a15c00; }
+        .muted { color: #888; font-size: 13px; }
+    </style>
+</head>
+<body>
+    <div class="header-banner">
+        <h1>{{ COLLEGE_NAME }}</h1>
+        <div class="dept">{{ DEPARTMENT_NAME }}</div>
+        <div class="hod">
+            {% if current_hod %}
+                Head of Department: {{ current_hod.name }} ({{ current_hod.designation }})
+            {% else %}
+                Head of Department: not set yet — add one on the Faculty page
+            {% endif %}
+        </div>
+    </div>
+    <nav>
+        <a href="{{ url_for('home') }}">🏠 Home</a>
+        <a href="{{ url_for('faculty') }}">🧑‍🏫 Faculty</a>
+        <a href="{{ url_for('students') }}">🎓 Students</a>
+        <a href="{{ url_for('courses') }}">📚 Add Course</a>
+        <a href="{{ url_for('od') }}">📝 OD Management</a>
+    </nav>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for m in messages %}
+                <div class="flash">{{ m }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+</body>
+</html>

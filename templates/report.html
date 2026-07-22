@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Attendance Report{% endblock %}
+{% block content %}
+<span class="pill">{{ course.code }}</span>
+<h1>{{ course.name }} — Attendance Report</h1>
+<p class="muted">Faculty In-Charge: {{ course.faculty_name }} &nbsp;|&nbsp; {{ sessions|length }} session(s) held so far.</p>
+<p class="muted">✅ = Present (scanned) &nbsp;|&nbsp; 🟡 OD = On-Duty (approved) &nbsp;|&nbsp; ❌ = Absent</p>
+
+<div class="card" style="overflow-x:auto;">
+    <table>
+        <tr>
+            <th>Student</th>
+            {% for s in sessions %}
+                <th>{{ s.session_date }}</th>
+            {% endfor %}
+            <th>Attendance %</th>
+        </tr>
+        {% for row in rows %}
+        <tr>
+            <td>{{ row.student.name }} <span class="muted">({{ row.student.roll_no }})</span></td>
+            {% for s in sessions %}
+                <td>
+                    {% if row.statuses[s.id] == "P" %}
+                        ✅
+                    {% elif row.statuses[s.id] == "OD" %}
+                        🟡 OD
+                    {% else %}
+                        ❌
+                    {% endif %}
+                </td>
+            {% endfor %}
+            <td><strong>{{ row.percentage }}%</strong></td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<a href="{{ url_for('course_detail', course_id=course.id) }}">&larr; Back to course</a>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<span class="pill">{{ session.course_code }}</span>
+<h1>{{ session.course_name }} — {{ session.session_date }}</h1>
+<p class="muted">Conducted by: {{ session.conducted_by_name }}</p>
+<p class="muted">{{ records|length }} student(s) checked in via scan.</p>
+
+<div class="card">
+    <a href="{{ url_for('export_csv', session_id=session.id) }}"><button>⬇ Export as CSV</button></a>
+    &nbsp;
+    <a href="{{ url_for('scan', session_id=session.id) }}" class="btn">📷 Back to Scanner</a>
+</div>
+
+<div class="card">
+    <h2 style="margin-top:0;">Present (Scanned)</h2>
+    <table>
+        <tr>
+            <th>#</th><th>Name</th><th>Roll No</th><th>Register No</th><th>Email</th><th>Time</th>
+        </tr>
+        {% for r in records %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ r.name }}</td>
+            <td>{{ r.roll_no }}</td>
+            <td>{{ r.register_no }}</td>
+            <td>{{ r.email }}</td>
+            <td>{{ r.marked_at }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+{% if od_today %}
+<div class="card">
+    <h2 style="margin-top:0;">🟡 On Duty (OD) Today</h2>
+    <table>
+        <tr><th>Name</th><th>Roll No</th><th>Reason</th><th>Approved By</th></tr>
+        {% for o in od_today %}
+        <tr>
+            <td>{{ o.name }}</td>
+            <td>{{ o.roll_no }}</td>
+            <td>{{ o.reason }}</td>
+            <td>{{ o.approved_by_name }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endif %}
+
+<a href="{{ url_for('home') }}">&larr; Back to home</a>
+<script>
+    setTimeout(() => location.reload(), 5000);
+</script>
+{% endblock %}

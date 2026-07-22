@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Scan Attendance{% endblock %}
+{% block content %}
+<span class="pill">{{ session.course_code }}</span>
+<h1>{{ session.course_name }} — {{ session.session_date }}</h1>
+<p class="muted">Conducted by: {{ session.conducted_by_name }}</p>
+
+<div class="card">
+    <div id="reader" style="width: 100%;"></div>
+</div>
+
+<div id="feedback" class="card" style="text-align:center; font-size: 18px; min-height: 24px;">
+    Point a student's ID card QR code at the camera.
+</div>
+
+<p class="muted" id="scan-count">0 students marked so far.</p>
+
+<a href="{{ url_for('dashboard', session_id=session.id) }}">View live dashboard &rarr;</a><br><br>
+<a href="{{ url_for('course_detail', course_id=session.course_id) }}">&larr; Back to course</a>
+
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+<script>
+    const SESSION_ID = {{ session.id }};
+    const feedbackBox = document.getElementById("feedback");
+    const countBox = document.getElementById("scan-count");
+    let markedCount = 0;
+    let lastToken = null;
+    let lastTime = 0;
+
+    function showFeedback(message, color) {
+        feedbackBox.textContent = message;
+        feedbackBox.style.background = color;
+    }
+
+    async function onScanSuccess(decodedText) {
+        const now = Date.now();
+        if (decodedText === lastToken && (now - lastTime) < 4000) {
+            return; // ignore repeat scans of the same card within 4 seconds
+        }
+        lastToken = decodedText;
+        lastTime = now;
+
+        try {
+            const response = await fetch("/api/mark", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ session_id: SESSION_ID, token: decodedText }),
+            });
+            const data = await response.json();
+
+            if (data.status === "marked") {
+                showFeedback(`✅ Marked present: ${data.name} (${data.roll_no})`, "#d4f8d4");
+                markedCount += 1;
+                countBox.textContent = `${markedCount} student(s) marked so far.`;
+            } else if (data.status === "duplicate") {
+                showFeedback(`⚠️ ${data.name} already marked present.`, "#fff3cd");
+            } else {
+                showFeedback("❌ Unrecognized ID card.", "#f8d4d4");
+            }
+        } catch (err) {
+            showFeedback("⚠️ Could not reach server. Check your connection.", "#f8d4d4");
+        }
+    }
+
+    const html5QrCode = new Html5Qrcode("reader");
+    html5QrCode.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: 250 },
+        onScanSuccess
+    ).catch((err) => {
+        showFeedback("⚠️ Could not start camera. Check browser permissions.", "#f8d4d4");
+    });
+</script>
+{% endblock %}

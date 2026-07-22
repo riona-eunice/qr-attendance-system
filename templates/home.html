@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<h1>📋 Department Attendance Dashboard</h1>
+<p class="muted">{{ student_count }} student(s) registered &nbsp;|&nbsp; {{ faculty_count }} faculty member(s)</p>
+
+<div class="card">
+    <a href="{{ url_for('courses') }}"><button>+ Add New Course</button></a>
+</div>
+
+<h2>Courses</h2>
+{% if courses %}
+    {% for c in courses %}
+    <div class="card">
+        <span class="pill">{{ c.code }}</span>
+        <h2 style="margin:8px 0;">{{ c.name }}</h2>
+        <p class="muted">Faculty In-Charge: {{ c.faculty_name }}</p>
+        <a href="{{ url_for('course_detail', course_id=c.id) }}">Open course &rarr;</a>
+    </div>
+    {% endfor %}
+{% else %}
+    <p>No courses yet. Add one above (you'll need to register at least one faculty member first).</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Students{% endblock %}
+{% block content %}
+<h1>🎓 Register a Student</h1>
+<div class="card">
+    <form method="POST">
+        <label>Full Name</label>
+        <input type="text" name="name" required>
+
+        <label>Roll Number</label>
+        <input type="text" name="roll_no" required>
+
+        <label>Register Number</label>
+        <input type="text" name="register_no" required>
+
+        <label>Email</label>
+        <input type="email" name="email" required>
+
+        <button type="submit">Register &amp; Generate ID Card</button>
+    </form>
+</div>
+
+<h2>All Students</h2>
+{% if students %}
+    {% for s in students %}
+    <div class="card">
+        <strong>{{ s.name }}</strong> <span class="muted">({{ s.roll_no }})</span><br>
+        <span class="muted">Reg No: {{ s.register_no }} &nbsp;|&nbsp; {{ s.email }}</span><br><br>
+        <a href="{{ url_for('student_card', student_id=s.id) }}">View / Print ID Card &rarr;</a>
+    </div>
+    {% endfor %}
+{% else %}
+    <p>No students registered yet.</p>
+{% endif %}
+{% endblock %}

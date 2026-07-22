@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}{{ student.name }}'s ID Card{% endblock %}
+{% block content %}
+<h1>Student ID Card</h1>
+<div class="card" style="text-align:center; max-width:340px; margin:0 auto;">
+    <p class="muted" style="margin-bottom:0;">{{ DEPARTMENT_NAME }}</p>
+    <h2 style="margin-bottom:4px;">{{ student.name }}</h2>
+    <p class="muted" style="margin-top:0;">Roll No: {{ student.roll_no }}</p>
+    <p class="muted">Reg No: {{ student.register_no }}</p>
+    <img src="data:image/png;base64,{{ qr_base64 }}" alt="Student QR ID" style="width:220px; margin:16px 0;">
+    <p class="muted">{{ student.email }}</p>
+</div>
+<p class="muted" style="text-align:center;">
+    Print this card (or save it to your phone) — hold the QR code up to the camera during class to mark attendance.
+</p>
+<div style="text-align:center;">
+    <a href="{{ url_for('students') }}">&larr; Back to students</a>
+</div>
+{% endblock %}
