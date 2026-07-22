@@ -176,5 +176,5 @@ Licensed under the [MIT License](LICENSE).
 
 ## 🙋 Author
 
-Built by [Your Name], Department of Artificial Intelligence and Machine Learning,
+Built by Riona Eunice J, Department of Artificial Intelligence and Machine Learning,
 Panimalar Engineering College.
